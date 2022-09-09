@@ -27,22 +27,31 @@ function fetchCountries(countryName) {
 
 function onEnterCountryName(event) {
   const countryName = event.target.value.trim();
-  fetchCountries(countryName).then(render).catch(onError);
-  // .finally(countryName => countryName.reset());
+
+  fetchCountries(countryName).then(render).catch(onError)
+
+  refs.coutryList.classList.remove('is-hidden')
+  refs.coutryInfo.classList.remove('is-hidden')
+  
+
+  // (countryName => countryName.reset());
+  // countryName.reset();
 }
 
 function render(countryName) {
   if (countryName.length > 10) {
     Notify.info('Too many matches found. Please enter a more specific name.');
+    refs.coutryList.classList.add('is-hidden');
+    refs.coutryInfo.classList.add('is-hidden');
   } else if (countryName.length === 1) {
     refs.coutryList.classList.add('is-hidden');
     renderCountryInfo(countryName);
-    // console.log(refs.body);
-    // console.log(refs.body2);
   } else if (countryName.length < 10) {
     renderCountryList(countryName);
-    // console.log(refs.body);
-    // console.log(refs.body2);
+    refs.coutryInfo.classList.add('is-hidden');
+  } else if (countryName.length = 0) {
+    refs.coutryList.classList.add('is-hidden');
+    refs.coutryInfo.classList.add('is-hidden');
   }
 }
 
@@ -52,8 +61,9 @@ function renderCountryList(countryName) {
     const name1 = countryName[i].name.common;
     const marcupList = `<li>
         <img src = ${flag1} alt = "" width="35"></img>
-                <span>${name1}</span>
+                <span class="nameCountryList">${name1}</span>
       </li>`;
+    refs.coutryInfo.insertAdjacentHTML('beforeend', '');
     refs.coutryList.insertAdjacentHTML('beforeend', marcupList);
   }
 }
@@ -65,12 +75,13 @@ function renderCountryInfo(countryName) {
     const capital = countryName[0].capital;
     const population = countryName[0].population;
     const language = Object.values(countryName[0].languages);
-    const marcupInfo = `<li>
-        <img src = ${flag2} alt = "" width="35">${name}</img>
+    const marcupInfo = `<div>
+        <img  src = ${flag2} alt = "" width="35"></img>
+        <span class="nameCountryInfo">${name}</span>
         <p>Capital: ${capital}</p>
         <p>Population: ${population}</p>
         <p>Language: ${language}</p>
-      </li>`;
+      </div>`;
     refs.coutryList.insertAdjacentHTML('beforeend', '');
     refs.coutryInfo.insertAdjacentHTML('beforeend', marcupInfo);
   }
@@ -85,8 +96,24 @@ refs.body.insertAdjacentHTML(
   'beforebegin',
   `<style>
     .is-hidden {
-      visibility: hidden;
-      margin: 0
+    position: absolute;
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+    margin-bottom: -1px;
+    padding-bottom: 0;
     } 
+    .country-list {
+      list-style: none;
+    }
+    .nameCountryList {
+margin-left: 10px;
+font-size: 24px;
+    }
+    .nameCountryInfo {
+      font-size: 48px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
     </style>`
 );
